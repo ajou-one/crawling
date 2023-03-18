@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 
 def dm_crawl(page):
-    url = "https://media.ajou.ac.kr/media/board/board01.jsp?mode=list&board_no=304&pager.offset=" + str(page * 10)
+    url = "https://media.ajou.ac.kr/media/board/board01.jsp?mode=list&board_no=304&pager.offset=" + str((page-1) * 10)
     response = requests.get(url)
     soup = BeautifulSoup(response.content, "html.parser", from_encoding='utf-8')
 

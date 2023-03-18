@@ -5,12 +5,12 @@ import re
 hdr = {'User-Agent': 'Mozilla/5.0'}
 
 
-def ajou_dorm(page):
+def gg(page):
 
-    baseUrl = 'https://dorm.ajou.ac.kr/dorm/board/board01.jsp'
+    baseUrl = 'https://youth.gg.go.kr/gg/intro/notice.do'
 
     pageUrl = baseUrl + \
-        f'?mode=list&board_no=774&pager.offset={(page-1)*10}'
+        f'?mode=list&&articleLimit=10&article.offset={page}'
 
     context = ssl._create_unverified_context()
 
@@ -19,14 +19,14 @@ def ajou_dorm(page):
     soup = BeautifulSoup(html, 'html.parser')
 
     notice_td = soup.find_all(
-        "td", attrs={'class': re.compile('^td title_comm')})
+        "div", attrs={'class': re.compile('^b-title-box')})
 
     urlList = []
     titleList = []
 
     for notice in notice_td:
 
-        title = notice.find("a").get_text(strip=True)
+        title = notice.find("a")['title']
 
         url = notice.find("a")['href']
 
@@ -34,4 +34,4 @@ def ajou_dorm(page):
 
         titleList.append(title)
 
-    return [url, title, [6 for i in range(len(url))]]
+        return [url, title, [7 for i in range(len(url))]]

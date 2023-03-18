@@ -2,12 +2,15 @@ import requests
 from bs4 import BeautifulSoup
 
 def sf_crawl(page):
-    url = "https://sw.ajou.ac.kr/sw/board/notice.do?mode=list&&articleLimit=10&article.offset=" + str(page * 10)
+    url = "https://sw.ajou.ac.kr/sw/board/notice.do?mode=list&&articleLimit=10&article.offset=" + str((page-1) * 10)
     response = requests.get(url)
     soup = BeautifulSoup(response.content, "html.parser", from_encoding='utf-8')
 
     aTags = soup.select(".b-title-box > a")
-
+    
+    if(len(aTags) == 5):
+        return [[],[],[]] 
+    
     url = []
     title = []
     for a in aTags:

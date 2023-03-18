@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 
 def cs_crawl(page):
-    url = "http://security.ajou.ac.kr/security/board/board01.jsp?mode=list&board_no=1403&pager.offset=" + str(page * 10)
+    url = "http://security.ajou.ac.kr/security/board/board01.jsp?mode=list&board_no=1403&pager.offset=" + str((page-1) * 10)
     response = requests.get(url)
     soup = BeautifulSoup(response.content, "html.parser", from_encoding='utf-8')
 

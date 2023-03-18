@@ -1,15 +1,16 @@
 import ssl
 import urllib.request
 from bs4 import BeautifulSoup
+import re
 hdr = {'User-Agent': 'Mozilla/5.0'}
 
 
-def gg(page):
+def ajou_dorm(page):
 
-    baseUrl = 'https://youth.gg.go.kr/gg/info/housing-welfare.do'
+    baseUrl = 'https://dorm.ajou.ac.kr/dorm/board/board01.jsp'
 
     pageUrl = baseUrl + \
-        f'?mode=list&&articleLimit=10&article.offset={(page-1)*8}'
+        f'?mode=list&board_no=774&pager.offset={((page-1))*10}'
 
     context = ssl._create_unverified_context()
 
@@ -17,14 +18,15 @@ def gg(page):
     html = urllib.request.urlopen(req, context=context).read()
     soup = BeautifulSoup(html, 'html.parser')
 
-    notice_ul = soup.select('div.board-list > ul > li')
+    notice_td = soup.find_all(
+        "td", attrs={'class': re.compile('^td title_comm')})
 
     urlList = []
     titleList = []
 
-    for notice in notice_ul:
+    for notice in notice_td:
 
-        title = notice.find("a")['title']
+        title = notice.find("a").get_text(strip=True)
 
         url = notice.find("a")['href']
 
@@ -32,4 +34,4 @@ def gg(page):
 
         titleList.append(title)
 
-    return [url, title, [8 for i in range(len(url))]]
+    return [urlList, titleList, [6 for i in range(len(urlList))]]

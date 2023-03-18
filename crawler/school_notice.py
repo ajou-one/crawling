@@ -5,12 +5,12 @@ import re
 hdr = {'User-Agent': 'Mozilla/5.0'}
 
 
-def scholar(page):
+def school_notice(page):
 
-    baseUrl = 'https://www.kosaf.go.kr/ko/notice.do'
+    baseUrl = 'https://www.ajou.ac.kr/kr/ajou/notice.do'
 
     pageUrl = baseUrl + \
-        f'?ctgrId1=&ctgrId2=&searchStr=&searchType=&page={page}&pg='
+        f'?mode=list&&articleLimit=10&article.offset={(page-1)*10}'
 
     context = ssl._create_unverified_context()
 
@@ -18,15 +18,15 @@ def scholar(page):
     html = urllib.request.urlopen(req, context=context).read()
     soup = BeautifulSoup(html, 'html.parser')
 
-    notice_td = soup.find_all(
-        "td", attrs={'class': re.compile('^subject')})
+    notice_div = soup.find_all(
+        "div", attrs={'class': re.compile('^b-title-box')})
 
     urlList = []
     titleList = []
 
-    for notice in notice_td:
+    for notice in notice_div:
 
-        title = notice.find("a").get_text(strip=True)
+        title = notice.find("a")['title']
 
         url = notice.find("a")['href']
 
@@ -34,4 +34,4 @@ def scholar(page):
 
         titleList.append(title)
 
-    return [url, title, [9 for i in range(len(url))]]
+    return [urlList, titleList, [0 for i in range(len(urlList))]]
