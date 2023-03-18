@@ -2,17 +2,17 @@ import ssl
 import urllib.request
 from bs4 import BeautifulSoup
 import re
-import json
 hdr = {'User-Agent': 'Mozilla/5.0'}
-baseUrl = 'https://dorm.ajou.ac.kr/dorm/board/board01.jsp'
 
-context = ssl._create_unverified_context()
 
-result = []
+def ajou_dorm(page):
 
-for offset in range(0, 780, 10):
+    baseUrl = 'https://dorm.ajou.ac.kr/dorm/board/board01.jsp'
 
-    pageUrl = baseUrl + f'?mode=list&board_no=774&pager.offset={offset}'
+    pageUrl = baseUrl + \
+        f'?mode=list&board_no=774&pager.offset={(page-1)*10}'
+
+    context = ssl._create_unverified_context()
 
     req = urllib.request.Request(pageUrl, headers=hdr)
     html = urllib.request.urlopen(req, context=context).read()
@@ -21,16 +21,17 @@ for offset in range(0, 780, 10):
     notice_td = soup.find_all(
         "td", attrs={'class': re.compile('^td title_comm')})
 
-    for notice in notice_td:
+    urlList = []
+    titleList = []
 
-        source = 6  # ajou_dorm
+    for notice in notice_td:
 
         title = notice.find("a").get_text(strip=True)
 
         url = notice.find("a")['href']
 
-        data = {'source': source, 'title': title, 'url': baseUrl + url}
+        urlList.append(baseUrl + url)
 
-        result.append(data)
+        titleList.append(title)
 
-print(result)
+    return [url, title, [6 for i in range(len(url))]]

@@ -2,17 +2,17 @@ import ssl
 import urllib.request
 from bs4 import BeautifulSoup
 import re
-import json
 hdr = {'User-Agent': 'Mozilla/5.0'}
-baseUrl = 'https://www.ajou.ac.kr/kr/ajou/notice.do'
 
-context = ssl._create_unverified_context()
 
-result = []
+def school_notice(page):
 
-for offset in range(0, 18260, 10):
+    baseUrl = 'https://www.ajou.ac.kr/kr/ajou/notice.do'
 
-    pageUrl = baseUrl + f'?mode=list&&articleLimit=10&article.offset={offset}'
+    pageUrl = baseUrl + \
+        f'?mode=list&&articleLimit=10&article.offset={(page-1)*10}'
+
+    context = ssl._create_unverified_context()
 
     req = urllib.request.Request(pageUrl, headers=hdr)
     html = urllib.request.urlopen(req, context=context).read()
@@ -21,16 +21,17 @@ for offset in range(0, 18260, 10):
     notice_div = soup.find_all(
         "div", attrs={'class': re.compile('^b-title-box')})
 
-    for notice in notice_div:
+    urlList = []
+    titleList = []
 
-        source = 0  # ajou_univ
+    for notice in notice_div:
 
         title = notice.find("a")['title']
 
         url = notice.find("a")['href']
 
-        data = {'source': source, 'title': title, 'url': baseUrl + url}
+        urlList.append(baseUrl + url)
 
-        result.append(data)
+        titleList.append(title)
 
-print(result)
+    return [url, title, [0 for i in range(len(url))]]
