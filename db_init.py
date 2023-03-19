@@ -18,6 +18,7 @@ db = mysql.connector.connect(
     passwd="1234",
     database="ajouone"
 )
+
 cursor = db.cursor()
 cursor.execute("drop table notice")
 cursor.execute("create table notice (id int primary key not null auto_increment, url varchar(200) not null, title varchar(200) not null unique, classify_code int not null, age varchar(10) not null)")
@@ -29,11 +30,10 @@ def crawling(crawler):
         sql = "INSERT INTO NOTICE (url, title, classify_code, age) VALUES (%s, %s, %s, %s)"
         for j in range(len(crawl[0])):
             val = (crawl[0][j], crawl[1][j], crawl[2][j], "old")
-
             try:
                 cursor.execute(sql,val)
             except:
-                pass
+                print("예외")
 
         if crawl == [[],[],[]]:
             break

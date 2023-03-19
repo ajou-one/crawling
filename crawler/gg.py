@@ -34,4 +34,4 @@ def gg(page):
 
         titleList.append(title)
 
-        return [url, title, [7 for i in range(len(url))]]
+        return [urlList, titleList, [7 for i in range(len(urlList))]]
